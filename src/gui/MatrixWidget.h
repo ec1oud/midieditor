@@ -90,6 +90,7 @@ signals:
         int valueY);
     void objectListChanged();
     void scrollChanged(int startMs, int maxMs, int startLine, int maxLine);
+    void pointedToTime(int ms);
 
 protected:
     void paintEvent(QPaintEvent* event);

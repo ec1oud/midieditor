@@ -42,6 +42,7 @@ class QGridLayout;
 class MidiTrack;
 class QShowEvent;
 class Update;
+class PaperStripWidget;
 
 class MainWindow : public QMainWindow {
 
@@ -153,6 +154,8 @@ public slots:
     void divChanged(QAction* action);
     void quantizationChanged(QAction*);
 
+    void showPaperStrip();
+
     void enableMagnet(bool enable);
 
     void openConfig();
@@ -209,6 +212,7 @@ private:
     QAction *setSingleMode, *setLineMode, *setFreehandMode, *_allChannelsVisible, *_allChannelsInvisible, *_allTracksAudible, *_allTracksMute,
         *_allChannelsAudible, *_allChannelsMute, *_allTracksVisible, *_allTracksInvisible, *stdToolAction, *undoAction, *redoAction, *_pasteAction, *pasteActionTB;
     MiscWidget* _miscWidget;
+    PaperStripWidget *_paperStripWidget = nullptr;
 
     QWidget* setupActions(QWidget* parent);
 

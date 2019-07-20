@@ -54,6 +54,7 @@
 #include "MatrixWidget.h"
 #include "MiscWidget.h"
 #include "NToleQuantizationDialog.h"
+#include "PaperStripWidget.h"
 #include "ProtocolWidget.h"
 #include "RecordDialog.h"
 #include "SettingsDialog.h"
@@ -576,6 +577,8 @@ void MainWindow::setFile(MidiFile* file)
     updateTrackMenu();
     mw_matrixWidget->update();
     _miscWidget->update();
+    if (_paperStripWidget)
+        _paperStripWidget->setFile(file);
     checkEnableActionsForSelection();
 }
 
@@ -2456,6 +2459,12 @@ QWidget* MainWindow::setupActions(QWidget* parent)
 
     toolsMB->addSeparator();
 
+    QAction* paperStripAction = new QAction("Music box strip...", this);
+    connect(paperStripAction, SIGNAL(triggered()), this, SLOT(showPaperStrip()));
+    toolsMB->addAction(paperStripAction);
+
+    toolsMB->addSeparator();
+
     QAction* magnetAction = new QAction("Magnet", editMB);
     toolsMB->addAction(magnetAction);
     magnetAction->setShortcut(QKeySequence(Qt::Key_M + Qt::CTRL));
@@ -2887,6 +2896,22 @@ void MainWindow::enableThru(bool enable)
 void MainWindow::quantizationChanged(QAction* action)
 {
     _quantizationGrid = action->data().toInt();
+}
+
+void MainWindow::showPaperStrip()
+{
+    if (_paperStripWidget) {
+        _paperStripWidget->raise();
+    } else {
+        _paperStripWidget = new PaperStripWidget();
+        _paperStripWidget->setFile(file);
+        connect(mw_matrixWidget, &MatrixWidget::pointedToTime,
+                _paperStripWidget, &PaperStripWidget::onPointedToTime);
+        connect(_paperStripWidget, &QObject::destroyed, [this]() {
+            _paperStripWidget = nullptr;
+        });
+        _paperStripWidget->show();
+    }
 }
 
 void MainWindow::quantizeSelection()

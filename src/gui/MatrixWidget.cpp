@@ -471,7 +471,10 @@ void MatrixWidget::paintEvent(QPaintEvent* event)
     if (enabled && mouseInRect(TimeLineArea)) {
         painter->setPen(Qt::red);
         painter->drawLine(mouseX, 0, mouseX, height());
+        emit pointedToTime(msOfXPos(mouseX));
         painter->setPen(Qt::black);
+    } else {
+        emit pointedToTime(-1);
     }
 
     if (MidiPlayer::isPlaying()) {
