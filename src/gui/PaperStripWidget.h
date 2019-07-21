@@ -34,7 +34,6 @@ public:
     explicit PaperStripWidget(QWidget *parent = nullptr);
     void setFile(MidiFile* m_file);
 
-    QSize sizeHint() const;
     int msPerBeat() const;
     int offsetHalfBeats() const;
 
@@ -50,6 +49,7 @@ signals:
     void offsetHalfBeatsChanged(int offsetHalfBeats);
 
 protected:
+    void updateSize();
     void paintEvent(QPaintEvent* event);
     void paint30Note(QPainter* painter);
     void paintChannel(QPainter *painter, int channel);
@@ -60,11 +60,11 @@ private:
     MidiFile* m_file = nullptr;
     int m_verticalSpacing = 12;
     int m_horizontalSpacing = 48; // distance between solid vertical lines
-    int m_stripLength = 100; // number of solid vertical lines
-    int m_gridLeftX = 50;
+    int m_stripLength = 100; // number of half-beats
+    int m_gridLeftX = 60;
     int m_gridTopY = 20;
     int m_topLine = 41;
-    int m_msPerBeat = 400; // time between solid vertical lines (there are dashed lines between them, so we can have half-beats too)
+    int m_msPerBeat = 375; // time between solid vertical lines (there are dashed lines between them, so we can have half-beats too)
     int m_pointedToTime = -1;
     int m_offsetHalfBeats = 0;
 };

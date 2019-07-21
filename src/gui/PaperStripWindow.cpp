@@ -29,9 +29,9 @@ PaperStripWindow::PaperStripWindow(QWidget *parent) : QMainWindow(parent)
 
     tb->addWidget(new QLabel(tr("ms per beat")));
     m_msPerBeatSB = new QSpinBox(this);
-    m_msPerBeatSB->setRange(10, 10000);
-    m_msPerBeatSB->setSingleStep(100);
-    m_msPerBeatSB->setValue(400);
+    m_msPerBeatSB->setRange(25, 10000);
+    m_msPerBeatSB->setSingleStep(25);
+    m_msPerBeatSB->setValue(375);
     tb->addWidget(m_msPerBeatSB);
     connect(m_msPerBeatSB, SIGNAL(valueChanged(int)),
             m_mainWidget, SLOT(setMsPerBeat(int)));
