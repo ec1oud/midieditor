@@ -22,18 +22,32 @@
 #include <QWidget>
 
 class MidiFile;
+class QPrinter;
 
 class PaperStripWidget : public QWidget
 {
     Q_OBJECT
+    Q_PROPERTY(int msPerBeat READ msPerBeat WRITE setMsPerBeat NOTIFY msPerBeatChanged)
+    Q_PROPERTY(int offsetHalfBeats READ offsetHalfBeats WRITE setOffsetHalfBeats NOTIFY offsetHalfBeatsChanged)
+
 public:
     explicit PaperStripWidget(QWidget *parent = nullptr);
-    void setFile(MidiFile* file);
+    void setFile(MidiFile* m_file);
 
-signals:
+    QSize sizeHint() const;
+    int msPerBeat() const;
+    int offsetHalfBeats() const;
+
+    void print(QPrinter *printer);
 
 public slots:
+    void setMsPerBeat(int msPerBeat);
+    void setOffsetHalfBeats(int offsetHalfBeats);
     void onPointedToTime(int ms);
+
+signals:
+    void msPerBeatChanged(int msPerBeat);
+    void offsetHalfBeatsChanged(int offsetHalfBeats);
 
 protected:
     void paintEvent(QPaintEvent* event);
@@ -43,15 +57,16 @@ protected:
     int yPosOfLine(int line);
 
 private:
-    MidiFile* file;
+    MidiFile* m_file = nullptr;
     int m_verticalSpacing = 12;
-    int m_horizontalSpacing = 36; // distance between solid vertical lines
+    int m_horizontalSpacing = 48; // distance between solid vertical lines
     int m_stripLength = 100; // number of solid vertical lines
     int m_gridLeftX = 50;
     int m_gridTopY = 20;
     int m_topLine = 41;
     int m_msPerBeat = 400; // time between solid vertical lines (there are dashed lines between them, so we can have half-beats too)
     int m_pointedToTime = -1;
+    int m_offsetHalfBeats = 0;
 };
 
 #endif // PAPERSTRIPWIDGET_H

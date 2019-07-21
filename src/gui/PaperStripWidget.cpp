@@ -23,16 +23,52 @@
 #include "../protocol/Protocol.h"
 #include <QDebug>
 #include <QPainter>
+#include <QPrinter>
 
 PaperStripWidget::PaperStripWidget(QWidget *parent) : QWidget(parent)
 {
-    setAttribute(Qt::WA_DeleteOnClose);
 }
 
 void PaperStripWidget::setFile(MidiFile *f)
 {
-    file = f;
-    connect(file->protocol(), SIGNAL(actionFinished()), this, SLOT(update()));
+    m_file = f;
+    connect(m_file->protocol(), SIGNAL(actionFinished()), this, SLOT(update()));
+    resize(m_file->maxTime() / msPerBeat() * m_horizontalSpacing + m_gridLeftX + 10, m_verticalSpacing * 30 + m_gridTopY + 10);
+    update();
+}
+
+QSize PaperStripWidget::sizeHint() const
+{
+    return QSize(800, 400);
+}
+
+int PaperStripWidget::msPerBeat() const
+{
+    return m_msPerBeat;
+}
+
+void PaperStripWidget::setMsPerBeat(int msPerBeat)
+{
+    if (m_msPerBeat == msPerBeat)
+        return;
+
+    m_msPerBeat = msPerBeat;
+    emit msPerBeatChanged(m_msPerBeat);
+    update();
+}
+
+int PaperStripWidget::offsetHalfBeats() const
+{
+    return m_offsetHalfBeats;
+}
+
+void PaperStripWidget::setOffsetHalfBeats(int offsetHalfBeats)
+{
+    if (m_offsetHalfBeats == offsetHalfBeats)
+        return;
+
+    m_offsetHalfBeats = offsetHalfBeats;
+    emit offsetHalfBeatsChanged(m_offsetHalfBeats);
     update();
 }
 
@@ -47,6 +83,30 @@ void PaperStripWidget::paintEvent(QPaintEvent *event)
     QPainter* painter = new QPainter(this);
     painter->setClipRect(event->rect());
     paint30Note(painter); // TODO make configurable
+    delete painter;
+}
+
+void PaperStripWidget::print(QPrinter *printer)
+{
+    QPainter painter;
+    printer->setResolution(152);
+    painter.begin(printer);
+    int halfBeatsPerPage = painter.viewport().width() / m_horizontalSpacing * 2;
+    int totalHalfBeats = m_file->maxTime() / msPerBeat() * 2;
+    qDebug() << "first page:" << painter.viewport() << "res" << printer->resolution() << "half beats across width:" << halfBeatsPerPage << "of total" << totalHalfBeats;
+    int offsetWas = m_offsetHalfBeats;
+    int pageCount = 0;
+    for (int offset = offsetWas; offset < totalHalfBeats; offset += halfBeatsPerPage) {
+        if (offset > offsetWas)
+            printer->newPage();
+        m_offsetHalfBeats = offset;
+        qDebug() << "page" << pageCount << "offset" << offset << "viewport" << painter.viewport();
+        // TODO painter.translate for subsequent pages?
+        paint30Note(&painter);
+        ++pageCount;
+    }
+    m_offsetHalfBeats = offsetWas;
+    painter.end();
 }
 
 void PaperStripWidget::paint30Note(QPainter *painter)
@@ -107,16 +167,16 @@ void PaperStripWidget::paint30Note(QPainter *painter)
 
 void PaperStripWidget::paintChannel(QPainter *painter, int channel)
 {
-    if (!file->channel(channel)->visible())
+    if (!m_file->channel(channel)->visible())
         return;
-    QMultiMap<int, MidiEvent*>* map = file->channelEvents(channel);
+    QMultiMap<int, MidiEvent*>* map = m_file->channelEvents(channel);
     QMap<int, MidiEvent*>::iterator it = map->begin();
     while (it != map->end()) { // && it.key() <= endTick) {
         MidiEvent* event = it.value();
         if (OnEvent* onEvent = dynamic_cast<OnEvent*>(event)) {
             if (event->line() > 127)
                 continue; // not a musical note
-            int x = xPosOfMs(file->msOfTick(event->midiTime()));
+            int x = xPosOfMs(m_file->msOfTick(event->midiTime()));
             int y = yPosOfLine(event->line());
             if (y >= m_gridTopY)
                 painter->drawEllipse(QPoint(x, y), 5, 5);
@@ -127,7 +187,8 @@ void PaperStripWidget::paintChannel(QPainter *painter, int channel)
 
 int PaperStripWidget::xPosOfMs(int ms)
 {
-    return m_gridLeftX + ms / (m_msPerBeat / 2) * (m_horizontalSpacing / 2);
+    return m_gridLeftX + ms / (m_msPerBeat / 2) * (m_horizontalSpacing / 2) +
+            m_offsetHalfBeats * m_horizontalSpacing / 2;
 }
 
 int PaperStripWidget::yPosOfLine(int line)

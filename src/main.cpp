@@ -86,6 +86,6 @@ int main(int argc, char* argv[])
         w = new MainWindow(argv[1]);
     else
         w = new MainWindow();
-    w->showMaximized();
+    w->show();
     return a.exec();
 }

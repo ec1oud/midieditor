@@ -5,7 +5,8 @@ QT += core \
     gui \
     network \
     xml \
-    multimedia
+    multimedia \
+    printsupport
 #DEFINES += ENABLE_REMOTE
 HEADERS += $$files(**.h, true)
 SOURCES += $$files(**.cpp, true)

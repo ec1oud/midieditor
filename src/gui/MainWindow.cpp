@@ -55,6 +55,7 @@
 #include "MiscWidget.h"
 #include "NToleQuantizationDialog.h"
 #include "PaperStripWidget.h"
+#include "PaperStripWindow.h"
 #include "ProtocolWidget.h"
 #include "RecordDialog.h"
 #include "SettingsDialog.h"
@@ -577,8 +578,8 @@ void MainWindow::setFile(MidiFile* file)
     updateTrackMenu();
     mw_matrixWidget->update();
     _miscWidget->update();
-    if (_paperStripWidget)
-        _paperStripWidget->setFile(file);
+    if (_paperStripWindow)
+        _paperStripWindow->setFile(file);
     checkEnableActionsForSelection();
 }
 
@@ -2900,18 +2901,18 @@ void MainWindow::quantizationChanged(QAction* action)
 
 void MainWindow::showPaperStrip()
 {
-    if (_paperStripWidget) {
-        _paperStripWidget->raise();
+    if (_paperStripWindow) {
+        _paperStripWindow->raise();
     } else {
-        _paperStripWidget = new PaperStripWidget();
-        _paperStripWidget->setFile(file);
+        _paperStripWindow = new PaperStripWindow();
+        _paperStripWindow->setFile(file);
         connect(mw_matrixWidget, &MatrixWidget::pointedToTime,
-                _paperStripWidget, &PaperStripWidget::onPointedToTime);
-        connect(_paperStripWidget, &QObject::destroyed, [this]() {
-            _paperStripWidget = nullptr;
+                _paperStripWindow->mainWidget(), &PaperStripWidget::onPointedToTime);
+        connect(_paperStripWindow, &QObject::destroyed, [this]() {
+            _paperStripWindow = nullptr;
         });
-        _paperStripWidget->show();
-    }
+        _paperStripWindow->show();
+     }
 }
 
 void MainWindow::quantizeSelection()

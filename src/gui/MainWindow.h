@@ -43,6 +43,7 @@ class MidiTrack;
 class QShowEvent;
 class Update;
 class PaperStripWidget;
+class PaperStripWindow;
 
 class MainWindow : public QMainWindow {
 
@@ -212,7 +213,7 @@ private:
     QAction *setSingleMode, *setLineMode, *setFreehandMode, *_allChannelsVisible, *_allChannelsInvisible, *_allTracksAudible, *_allTracksMute,
         *_allChannelsAudible, *_allChannelsMute, *_allTracksVisible, *_allTracksInvisible, *stdToolAction, *undoAction, *redoAction, *_pasteAction, *pasteActionTB;
     MiscWidget* _miscWidget;
-    PaperStripWidget *_paperStripWidget = nullptr;
+    PaperStripWindow *_paperStripWindow = nullptr;
 
     QWidget* setupActions(QWidget* parent);
 
