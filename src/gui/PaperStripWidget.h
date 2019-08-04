@@ -61,6 +61,7 @@ private:
     int m_verticalSpacing = 12;
     int m_horizontalSpacing = 48; // distance between solid vertical lines
     int m_stripLength = 100; // number of half-beats
+    int m_stripPageLength = 34; // number of half-beats that fit across A4 paper
     int m_gridLeftX = 60;
     int m_gridTopY = 20;
     int m_topLine = 41;
