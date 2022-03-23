@@ -5,8 +5,6 @@
 MidiEditor
 ===========
 
-[![Build Status](https://api.travis-ci.org/markusschwenk/midieditor.svg?branch=master)](https://travis-ci.org/markusschwenk/midieditor)
-
 Downloads : [last release](https://github.com/markusschwenk/midieditor/releases/)
 
 ### Building Dependencies
@@ -16,11 +14,13 @@ Downloads : [last release](https://github.com/markusschwenk/midieditor/releases/
 
 ### Introduction
 
-MidiEditor is a free software providing an interface to edit, record, and play Midi data.
+MidiEditor is free software providing an interface to edit, record, and play Midi data.
 
 The editor is able to open existing Midi files and modify their content. New files can be created and the user can enter his own composition by either recording Midi data from a connected Midi device (e.g., a digital piano or a keyboard) or by manually creating new notes and other Midi events. The recorded data can be easily quantified and edited afterwards using MidiEditor.
 
-![image](midieditor-manual/screenshots/midieditor-full.png)
+This fork includes a feature to generate paper strip templates for the common [30-note music box mechanism](https://www.amazon.com/Wingostore-Notes-Crank-Movement-Copper/dp/B0774TSP3T).  After printing, you can cut out and tape the segments onto the cardstock strip, and punch out the holes as indicated.
+
+![image](manual/screenshots/editor-and-mb-strip.png)
 
 ### Features
 
@@ -29,6 +29,7 @@ The editor is able to open existing Midi files and modify their content. New fil
 * Tracks, channels and Midi events can be edited
 * Event quantization
 * Control changes can be visualized
+* Generate music box strips
 * Automatic Updates
 * Free
 * Available for Windows and Linux
@@ -49,9 +50,4 @@ Please feel free to contact the developer if you have any suggestions! Please al
 ### Manual
 
 [https://midieditor.org/index.php?category=manual](https://midieditor.org/index.php?category=manual)
-
-
-
-
-
 
